@@ -25,13 +25,13 @@ Data Stack size : 256
 #define TRANSICAO_06 = 5 
 #define CONFIRMACAO = 6 
 
-typedef struct BancoDeDados{
+typedef struct {
     uint8_t card_id[5];
     uint16_t card_type;
     uint16_t saldo;
-};//8 bit * 5 + 16 bit * 1 + 16 nit *1 = 9 bytes 
+} BancoDeDados;//8 bit * 5 + 16 bit * 1 + 16 nit *1 = 9 bytes 
 
-char ESTADO_DA_MAQUINA = 0; // 0 = stand-by, 1 = 0 para 3, 2 = 3 para 1, 3 = recarga, 4 = 6 para 1, 5 = 1 para 6, 6 = aguardo confirmacao 
+char ESTADO_DA_MAQUINA = STAND_BY; // 0 = stand-by, 1 = 0 para 3, 2 = 3 para 1, 3 = recarga, 4 = 6 para 1, 5 = 1 para 6, 6 = aguardo confirmacao 
 
 BancoDeDados bancoDeDados[10];
 
@@ -106,20 +106,24 @@ void main(void)
         botao = ~PINC.5;
         leitura = rc522ReadCard(card_id, &card_type);
 
-        if(rc522ReadCard(card_id, &card_type))
-        {
-            printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
-            /*
-                Importante fazer o print pelo menos uma fez pra saber o 
-                endereço da tag, caso desejem fazer algoexclusivo para ela.
-            */
+        // if(rc522ReadCard(card_id, &card_type))
+        // {
+        //     printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
+        //     /*
+        //         Importante fazer o print pelo menos uma fez pra saber o 
+        //         endereço da tag, caso desejem fazer algoexclusivo para ela.
+        //     */
         
 
 
-            delay_ms(1000);
-        }
+        //     delay_ms(1000);
+        // }
+
         switch (ESTADO_DA_MAQUINA){
             case STAND_BY:
+                if(leitura){
+                    printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
+                }
             break;
             case TRANSICAO_03:
             break;
@@ -134,6 +138,7 @@ void main(void)
             case CONFIRMACAO:
             break;
         }
+        delay_ms(20);
     }
 }
 
