@@ -16,14 +16,15 @@ Data Stack size : 256
 #include <stdio.h>
 #include <delay.h>
 #include "lib/rc522.h"
+#include "lib/rc522.c"
 
-#define STAND_BY = 0 
-#define TRANSICAO_03 = 1 
-#define TRANSICAO_30 = 2 
-#define RECARGA = 3 
-#define TRANSICAO_60 = 4 
-#define TRANSICAO_06 = 5 
-#define CONFIRMACAO = 6 
+#define STAND_BY 0 
+#define TRANSICAO_03 1 
+#define TRANSICAO_30 2 
+#define RECARGA 3 
+#define TRANSICAO_60 4 
+#define TRANSICAO_06 5 
+#define CONFIRMACAO 6 
 
 typedef struct {
     uint8_t card_id[5];
@@ -41,10 +42,8 @@ void main(void)
     uint16_t card_type;
     char botao = 0; // not PINC.5
     char leitura = 0; // 1 = pressionado
+
     
-
-    Func0=In
-
     PORTB = 0x00;
     DDRB = 0x2C;
 
@@ -141,5 +140,3 @@ void main(void)
         delay_ms(20);
     }
 }
-
-ESTADO_DA_MAQUINA = 0; # 0 = stand-by , 1 = cadastro e deposito, 2 = aguardo de confirmacao  
