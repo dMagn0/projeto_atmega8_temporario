@@ -44,10 +44,6 @@ void main(void)
     char leitura = 0; // 1 = pressionado
 
     
-<<<<<<< HEAD
-
-=======
->>>>>>> 170165204c87f02c11c1465719bbb8681e3a8fd0
     PORTB = 0x00;
     DDRB = 0x2C;
 
