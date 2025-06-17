@@ -16,20 +16,21 @@ Data Stack size : 256
 #include <stdio.h>
 #include <delay.h>
 #include "lib/rc522.h"
+#include "lib/rc522.c"
 
-#define STAND_BY = 0 
-#define TRANSICAO_03 = 1 
-#define TRANSICAO_30 = 2 
-#define RECARGA = 3 
-#define TRANSICAO_60 = 4 
-#define TRANSICAO_06 = 5 
-#define CONFIRMACAO = 6 
+#define STAND_BY 0 
+#define TRANSICAO_03 1 
+#define TRANSICAO_30 2 
+#define RECARGA 3 
+#define TRANSICAO_60 4 
+#define TRANSICAO_06 5 
+#define CONFIRMACAO 6 
 
 typedef struct {
     uint8_t card_id[5];
     uint16_t card_type;
     uint16_t saldo;
-} BancoDeDados;//8 bit * 5 + 16 bit * 1 + 16 nit *1 = 9 bytes 
+} BancoDeDados; //8 bit * 5 + 16 bit * 1 + 16 nit *1 = 9 bytes ~~ 11 byte
 
 char ESTADO_DA_MAQUINA = STAND_BY; // 0 = stand-by, 1 = 0 para 3, 2 = 3 para 1, 3 = recarga, 4 = 6 para 1, 5 = 1 para 6, 6 = aguardo confirmacao 
 
@@ -42,8 +43,6 @@ void main(void)
     char botao = 0; // not PINC.5
     char leitura = 0; // 1 = pressionado
     
-
-    Func0=In
 
     PORTB = 0x00;
     DDRB = 0x2C;
@@ -103,43 +102,41 @@ void main(void)
     }
     while (1){
 
-        botao = ~PINC.5;
-        leitura = rc522ReadCard(card_id, &card_type);
+        // botao = ~PINC.5;
+        // leitura = rc522ReadCard(card_id, &card_type);
 
-        // if(rc522ReadCard(card_id, &card_type))
-        // {
-        //     printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
-        //     /*
-        //         Importante fazer o print pelo menos uma fez pra saber o 
-        //         endereço da tag, caso desejem fazer algoexclusivo para ela.
-        //     */
+        if(rc522ReadCard(card_id, &card_type))
+        {
+            printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
+            /*
+                Importante fazer o print pelo menos uma fez pra saber o 
+                endereço da tag, caso desejem fazer algoexclusivo para ela.
+            */
         
 
 
-        //     delay_ms(1000);
-        // }
-
-        switch (ESTADO_DA_MAQUINA){
-            case STAND_BY:
-                if(leitura){
-                    printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
-                }
-            break;
-            case TRANSICAO_03:
-            break;
-            case TRANSICAO_30:
-            break;
-            case RECARGA:
-            break;
-            case TRANSICAO_60:
-            break;
-            case TRANSICAO_06:
-            break;
-            case CONFIRMACAO:
-            break;
+            delay_ms(1000);
         }
-        delay_ms(20);
+
+        // switch (ESTADO_DA_MAQUINA){
+        //     case STAND_BY:
+        //         if(leitura){
+        //             printf("Card [0x%x, 0x%x, 0x%x, 0x%x, 0x%x]\n", card_id[0],card_id[1], card_id[2], card_id[3], card_id[4]);
+        //         }
+        //     break;
+        //     case TRANSICAO_03:
+        //     break;
+        //     case TRANSICAO_30:
+        //     break;
+        //     case RECARGA:
+        //     break;
+        //     case TRANSICAO_60:
+        //     break;
+        //     case TRANSICAO_06:
+        //     break;
+        //     case CONFIRMACAO:
+        //     break;
+        // }
+        // delay_ms(20);
     }
 }
-
-ESTADO_DA_MAQUINA = 0; # 0 = stand-by , 1 = cadastro e deposito, 2 = aguardo de confirmacao  
