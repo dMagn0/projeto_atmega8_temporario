@@ -72,7 +72,7 @@ unsigned char confirma_saldo(unsigned char posicao){
     return 1;
 }
 
-unsigned char subtrai_saldo(unsigned char posicao){
+void subtrai_saldo(unsigned char posicao){
     bancoDeDados[posicao].saldo--;
 }
 
