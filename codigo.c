@@ -37,15 +37,15 @@ Data Stack size : 256
 typedef struct {
     uint8_t card_id[5];
     uint16_t card_type;
-    char saldo;
+    unsigned char saldo;
 } BancoDeDados; //8 bit * 5 + 16 bit * 1 + 8 bit *1 = 7 bytes ~~ 10 byte
 
-char estadoDaMaquina = STAND_BY; // 0 = stand-by, 1 = 0 para 3, 2 = 3 para 1, 3 = recarga, 4 = 6 para 1, 5 = 1 para 6, 6 = aguardo confirmacao 
+unsigned char estadoDaMaquina = STAND_BY; // 0 = stand-by, 1 = 0 para 3, 2 = 3 para 1, 3 = recarga, 4 = 6 para 1, 5 = 1 para 6, 6 = aguardo confirmacao 
 
 BancoDeDados bancoDeDados[TAMANHO_DO_BANCO];
-char numero_cadastrado = 0;
+unsigned char numero_cadastrado = 0;
 
-char consulta_conta_cadastrada(uint8_t *card_id, uint16_t card_type, char* posicao){
+unsigned char consulta_conta_cadastrada(uint8_t *card_id, uint16_t card_type, unsigned char* posicao){
     char i = 0;
 
     for(i=0;i<numero_cadastrado;i++){
@@ -65,26 +65,29 @@ char consulta_conta_cadastrada(uint8_t *card_id, uint16_t card_type, char* posic
 
 }
 
-char subtrai_saldo(char posicao){
+unsigned char confirma_saldo(unsigned char posicao){
     if(bancoDeDados[posicao].saldo == 0){
         return 0;
     }
-    bancoDeDados[posicao].saldo--;
     return 1;
+}
+
+unsigned char subtrai_saldo(unsigned char posicao){
+    bancoDeDados[posicao].saldo--;
 }
 
 void main(void)
 {
     uint8_t card_id[5];
     uint16_t card_type;
-    char botao = 0; // not PINC.5
-    char leitura = 0; // 1 = pressionado
+    unsigned char botao = 0; // not PINC.5
+    unsigned char leitura = 0; // 1 = pressionado
 
-    char processa_cartao = 1;
+    unsigned char processa_cartao = 1;
     
-    char posicao_da_conta = 0; // posicao da conta cadastrada
+    unsigned char posicao_da_conta = 0; // posicao da conta cadastrada
 
-    char timer_aux = 255;
+    unsigned char timer_aux = 255;
 
     PORTB = 0x00;
     DDRB = 0x2C;
@@ -187,10 +190,9 @@ void main(void)
                         timer_aux = 255;
 
                         if( consulta_conta_cadastrada( card_id, card_type, &posicao_da_conta) ){
-                            if( subtrai_saldo(posicao_da_conta) ){
-                                
-                                estadoDaMaquina = TRANSICAO_06;
-                                break;
+                            if( confirma_saldo(posicao_da_conta)){
+                                    estadoDaMaquina = TRANSICAO_06;
+                                    break;
                             }
 
                             estadoDaMaquina = SALDO_INSUFICIENTE;
@@ -200,7 +202,7 @@ void main(void)
                         estadoDaMaquina = CARTAO_INVALIDO;
                     break;    
                     case TRANSICAO_03:
-                        if(~botao){
+                        if(botao == 0){
                             estadoDaMaquina = RECARGA;
                             LED_FUNCIONAMENTO = 1;
                             timer_aux=255;
@@ -262,7 +264,7 @@ void main(void)
                     case TRANSICAO_06:
                         LED_CONFIRMACAO = 0;
                         delay_ms(200);
-                        LED_FUNCIONAMENTO = 1;
+                        LED_CONFIRMACAO = 1;
                         
                         estadoDaMaquina = CONFIRMACAO;
                     break;
@@ -275,7 +277,7 @@ void main(void)
                         }
 
                         if(timer_aux >= 100){
-                            estadoDaMaquina = CARTAO_INVALIDO;
+                            estadoDaMaquina = SALDO_INSUFICIENTE;
                         }
 
 
