@@ -31,8 +31,8 @@ Data Stack size : 256
 
 #define TAMANHO_DO_BANCO 10
 
-#define LED_FUNCIONAMENTO ~PORTC.4
-#define LED_CONFIRMACAO ~PORTC.3
+#define LED_FUNCIONAMENTO PORTC.4
+#define LED_CONFIRMACAO PORTC.3
 
 typedef struct {
     uint8_t card_id[5];
@@ -149,8 +149,8 @@ void main(void)
 
         estadoDaMaquina = STAND_BY;
         timer_aux = 0;
-        LED_CONFIRMACAO = 1;
-        LED_FUNCIONAMENTO = 1;
+        LED_CONFIRMACAO = 0;
+        LED_FUNCIONAMENTO = 0;
         processa_cartao = 1;
 
         // botao = ~PINC.5;
@@ -172,7 +172,7 @@ void main(void)
                     case STAND_BY:
 
                         if(botao){
-                            LED_FUNCIONAMENTO = 0;
+                            LED_FUNCIONAMENTO = 1;
                             if(timer_aux>=100){
                                 estadoDaMaquina = TRANSICAO_03;
                                 timer_aux = 255;
@@ -186,7 +186,7 @@ void main(void)
                             break;
                         }
 
-                        LED_FUNCIONAMENTO = 1;
+                        LED_FUNCIONAMENTO = 0;
                         timer_aux = 255;
 
                         if( consulta_conta_cadastrada( card_id, card_type, &posicao_da_conta) ){
@@ -204,7 +204,7 @@ void main(void)
                     case TRANSICAO_03:
                         if(botao == 0){
                             estadoDaMaquina = RECARGA;
-                            LED_FUNCIONAMENTO = 1;
+                            LED_FUNCIONAMENTO = 0;
                             timer_aux=255;
                             break;
                         }
@@ -216,13 +216,13 @@ void main(void)
                     
                     break;
                     case CONCLUSAO_2B:
-                        LED_CONFIRMACAO = 0;
-                        delay_ms(200);
                         LED_CONFIRMACAO = 1;
+                        delay_ms(200);
+                        LED_CONFIRMACAO = 0;
                         delay_ms(100);
-                        LED_CONFIRMACAO = 0;
-                        delay_ms(200);
                         LED_CONFIRMACAO = 1;
+                        delay_ms(200);
+                        LED_CONFIRMACAO = 0;
                         processa_cartao = 0;
                     break;
                     case RECARGA:
@@ -247,24 +247,24 @@ void main(void)
 
                     break;
                     case CONCLUSAO_3B:
-                        LED_CONFIRMACAO = 0;
-                        delay_ms(200);
                         LED_CONFIRMACAO = 1;
+                        delay_ms(200);
+                        LED_CONFIRMACAO = 0;
                         delay_ms(100);
-                        LED_CONFIRMACAO = 0;
-                        delay_ms(200);
                         LED_CONFIRMACAO = 1;
+                        delay_ms(200);
+                        LED_CONFIRMACAO = 0;
                         delay_ms(100);
-                        LED_CONFIRMACAO = 0;
-                        delay_ms(200);
                         LED_CONFIRMACAO = 1;
+                        delay_ms(200);
+                        LED_CONFIRMACAO = 0;
 
                         processa_cartao = 0;
                     break;
                     case TRANSICAO_06:
-                        LED_CONFIRMACAO = 0;
-                        delay_ms(200);
                         LED_CONFIRMACAO = 1;
+                        delay_ms(200);
+                        LED_CONFIRMACAO = 0;
                         
                         estadoDaMaquina = CONFIRMACAO;
                     break;
@@ -283,28 +283,28 @@ void main(void)
 
                     break;
                     case CARTAO_INVALIDO:
-                        LED_FUNCIONAMENTO = 0;
-                        delay_ms(200);
                         LED_FUNCIONAMENTO = 1;
+                        delay_ms(200);
+                        LED_FUNCIONAMENTO = 0;
                         delay_ms(100);
-                        LED_FUNCIONAMENTO = 0;
-                        delay_ms(200);
                         LED_FUNCIONAMENTO = 1;
+                        delay_ms(200);
+                        LED_FUNCIONAMENTO = 0;
                         delay_ms(100);
-                        LED_FUNCIONAMENTO = 0;
-                        delay_ms(200);
                         LED_FUNCIONAMENTO = 1;
+                        delay_ms(200);
+                        LED_FUNCIONAMENTO = 0;
 
                         processa_cartao = 0;
                     break;
                     case SALDO_INSUFICIENTE:
-                        LED_FUNCIONAMENTO = 0;
-                        delay_ms(200);
                         LED_FUNCIONAMENTO = 1;
+                        delay_ms(200);
+                        LED_FUNCIONAMENTO = 0;
                         delay_ms(100);
-                        LED_FUNCIONAMENTO = 0;
-                        delay_ms(200);
                         LED_FUNCIONAMENTO = 1;
+                        delay_ms(200);
+                        LED_FUNCIONAMENTO = 0;
 
                         processa_cartao = 0;
                     break;
