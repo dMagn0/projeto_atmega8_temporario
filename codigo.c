@@ -31,8 +31,8 @@ Data Stack size : 256
 
 #define TAMANHO_DO_BANCO 10
 
-#define LED_FUNCIONAMENTO PORTC.4
-#define LED_CONFIRMACAO PORTC.3
+#define LED_FUNCIONAMENTO ~PORTC.4
+#define LED_CONFIRMACAO ~PORTC.3
 
 typedef struct {
     uint8_t card_id[5];
@@ -92,7 +92,7 @@ void main(void)
     PORTB = 0x00;
     DDRB = 0x2C;
 
-    PORTC= 0x00;
+    PORTC= 0b00111000;
     DDRC= 0b00011001;
 
     PORTD=0x00;
