@@ -89,6 +89,7 @@ void main(void)
 
     unsigned char timer_aux = 255;
 
+    
     PORTB = 0x00;
     DDRB = 0x2C;
 
