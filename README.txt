@@ -1,3 +1,5 @@
+PROJETO DE LEITOR DE CARTÃO UTILIZANDO LEITOR RFID RC522
+
 PC3 = led de confirmacao
 PC4 = led de funcionamento
 PC5 = botao
